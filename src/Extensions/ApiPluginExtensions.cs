@@ -114,6 +114,9 @@ public static class ApiPluginExtensions
                 var programType = plugin.GetTypes().FirstOrDefault(t => string.Equals(t.Name, "Program", StringComparison.OrdinalIgnoreCase));
                 if (programType != null)
                 {
+                    var endpointDefinitionTypes = programType.Assembly.ExportedTypes
+                        .Where(type => typeof(IEndpointDefinition).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                        .ToList();
                     services.AddEndpointDefinitions(programType);
                 }
             }
