@@ -35,7 +35,7 @@ This will:
 
 1. Create a Windows Service named "MinimalApiWindowsService"
 2. Start the service
-3. Make the API accessible at https://localhost:7145
+3. Make the API accessible at http://localhost:5000
 
 ## Uninstalling the Windows Service
 
@@ -75,4 +75,4 @@ The project uses `IHostedService` to start and stop a web application when the W
 
 - Ensure you're running installation scripts as Administrator
 - Check Windows Event Logs for any service-related errors
-- Verify that port 7145 is not in use by another application
+- Verify that port 5000 is not in use by another application

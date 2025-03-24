@@ -1,4 +1,5 @@
 using EndpointDefinition;
+using MinimalApiWindowsService.Constants;
 using MinimalApiWindowsService.Extensions;
 
 namespace MinimalApiWindowsService.Services;
@@ -56,7 +57,10 @@ public class ApiService(ILogger<ApiService> logger) : IHostedService, IDisposabl
         _logger.LogInformation("API Service is stopping...");
 
         // Trigger cancellation to stop the web application
-        _webAppCts?.Cancel();
+        if (_webAppCts != null)
+        {
+            await _webAppCts.CancelAsync();
+        }
 
         // Wait for the web host to stop
         if (_webHost != null)
@@ -71,8 +75,8 @@ public class ApiService(ILogger<ApiService> logger) : IHostedService, IDisposabl
     /// Creates and configures the web application.
     /// </summary>
     /// <remarks>
-    /// This method reads the plugin path from the configuration and adds the plugins,
-    /// NuGet plugins, and endpoint definitions to the web application.
+    /// This method reads the plug-in path from the configuration and adds the plug-ins,
+    /// NuGet plug-ins, and endpoint definitions to the web application.
     /// It then configures the web application to listen on a specific port (7145)
     /// and defines two endpoints: "/" and "/health".
     /// </remarks>
@@ -81,27 +85,30 @@ public class ApiService(ILogger<ApiService> logger) : IHostedService, IDisposabl
     {
         var builder = WebApplication.CreateBuilder();
 
-        // Read the plugin path from the configuration
+        // Read the plug-in path from the configuration
         string pluginPath = builder.Configuration["PluginPath"] ?? throw new InvalidOperationException("PluginPath configuration is missing.");
 
-        // Add plugins
+        // Add plug-ins
         // ...
-        // e.g. builder.Services.AddApiPlugins(pluginPath);
+        // e.g. builder.Services.AddApiPluginsEndpointDefinitions(pluginPath);
 
-        // Add NuGet plugins
-        builder.Services.AddApiNugetPlugins(pluginPath);
+        // Add NuGet plug-ins
+        builder.Services.AddApiNugetPluginsEndpointDefinitions(pluginPath);
 
         // Add the endpoint definitions
-        builder.Services.AddEndpointDefinitions(typeof(IEndpointDefinition));
+        builder.Services.AddEndpointDefinitions(typeof(Program));
 
         // Configure Kestrel to listen on a specific port
-        string protocol = builder.Configuration["Protocol"] ?? "https";
-        string domain = builder.Configuration["Domain"] ?? "localhost";
-        string port = builder.Configuration["Port"] ?? "7145";
+        string protocol = builder.Configuration["Protocol"] ?? ApiConstants.HTTP;
+        string domain = builder.Configuration["Domain"] ?? ApiConstants.LocalHost;
+        string port = builder.Configuration["Port"] ?? ApiConstants.Port;
         builder.WebHost.UseUrls($"{protocol}://{domain}:{port}");
 
         var app = builder.Build();
 
+        // ...
+        // e.g. builder.Services.UseApiPluginsEndpointDefinitions(pluginPath);
+        app.UseApiNugetPluginsEndpointDefinitions(app.Environment);
         app.UseEndpointDefinitions(app.Environment);
 
         // Define your Minimal API endpoints
