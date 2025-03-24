@@ -57,7 +57,7 @@ public class ApiService(ILogger<ApiService> logger) : IHostedService, IDisposabl
         _logger.LogInformation("API Service is stopping...");
 
         // Trigger cancellation to stop the web application
-        if (_webAppCts != null)
+        if (_webAppCts != null && !_webAppCts.IsCancellationRequested)
         {
             await _webAppCts.CancelAsync();
         }
