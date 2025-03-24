@@ -1,6 +1,4 @@
 using EndpointDefinition;
-using MinimalApiWindowsService.Constants;
-using MinimalApiWindowsService.Extensions;
 
 namespace MinimalApiWindowsService.Services;
 

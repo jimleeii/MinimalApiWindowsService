@@ -1,5 +1,4 @@
 using EndpointDefinition;
-using MinimalApiWindowsService.Extensions.Helpers;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using System.Collections.Concurrent;

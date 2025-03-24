@@ -1,5 +1,4 @@
 using EndpointDefinition;
-using MinimalApiWindowsService.Extensions.Helpers;
 
 namespace MinimalApiWindowsService.Extensions;
 
